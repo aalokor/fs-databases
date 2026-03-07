@@ -1,0 +1,29 @@
+{
+  "name": "fs-databases",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/aalokor/fs-databases#readme",
+  "bugs": {
+    "url": "https://github.com/aalokor/fs-databases/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aalokor/fs-databases.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
+    "sequelize": "^6.37.7"
+  }
+}
