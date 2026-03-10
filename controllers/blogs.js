@@ -16,38 +16,32 @@ router.get("/", async (req, res) => {
   res.json(blogs);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const blog = await Blog.create({ ...req.body });
     console.log(blog.toJSON());
     return res.json(blog);
   } catch (error) {
-    return res.status(400).json({ error });
+    next(error);
   }
 });
 
-router.delete("/:id", blogFinder, async (req, res) => {
+router.delete("/:id", blogFinder, async (req, res, next) => {
   try {
-    const deleted = await req.blog.destroy();
-    if (deleted) {
-      return res.status(200).json({ message: "Blog deleted" });
-    } else {
-      return res.status(404).json({ error: "Blog not found" });
-    }
+    await req.blog.destroy();
+    return res.status(200).json({ message: "Blog deleted" });
   } catch (error) {
-    return res.status(400).json({ error });
+    next(error);
   }
 });
 
-router.put("/:id", blogFinder, async (req, res) => {
+router.put("/:id", blogFinder, async (req, res, next) => {
   try {
     req.blog.likes = req.body.likes;
-
     const modified = await req.blog.save();
-
-    return res.status(200).json(modified);
+    return res.json(modified);
   } catch (error) {
-    return res.status(400).json({ error });
+    next(error);
   }
 });
 
