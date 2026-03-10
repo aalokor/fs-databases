@@ -20,7 +20,7 @@ router.post("/", async (req, res, next) => {
   try {
     const blog = await Blog.create({ ...req.body });
     console.log(blog.toJSON());
-    return res.json(blog);
+    res.json(blog);
   } catch (error) {
     next(error);
   }
@@ -29,7 +29,7 @@ router.post("/", async (req, res, next) => {
 router.delete("/:id", blogFinder, async (req, res, next) => {
   try {
     await req.blog.destroy();
-    return res.status(200).json({ message: "Blog deleted" });
+    res.status(200).json({ message: "Blog deleted" });
   } catch (error) {
     next(error);
   }
@@ -39,7 +39,7 @@ router.put("/:id", blogFinder, async (req, res, next) => {
   try {
     req.blog.likes = req.body.likes;
     const modified = await req.blog.save();
-    return res.json(modified);
+    res.json(modified);
   } catch (error) {
     next(error);
   }
