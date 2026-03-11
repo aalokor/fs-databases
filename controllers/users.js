@@ -10,6 +10,16 @@ const userFinder = async (req, res, next) => {
   next();
 };
 
+const userFinderByName = async (req, res, next) => {
+  req.user = await User.findOne({
+    where: { username: req.params.username },
+  });
+  if (!req.user) {
+    return res.status(404).end();
+  }
+  next();
+};
+
 router.get("/", async (req, res) => {
   const users = await User.findAll();
   res.json(users);
@@ -24,7 +34,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/:id", userFinder, async (req, res, next) => {
+router.put("/:username", userFinderByName, async (req, res, next) => {
   try {
     req.user.username = req.body.username;
     const modified = await req.user.save();
