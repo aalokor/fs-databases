@@ -26,6 +26,21 @@ Blog.init(
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    year: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: {
+          args: [1991],
+          msg: "Year must be at least 1991",
+        },
+        isValidYear(value) {
+          const currentYear = new Date().getFullYear();
+          if (value > currentYear) {
+            throw new Error(`Year cannot be greater than ${currentYear}`);
+          }
+        },
+      },
+    },
   },
   {
     sequelize,
