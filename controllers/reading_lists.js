@@ -43,4 +43,28 @@ router.post("/", tokenExtractor, async (req, res, next) => {
   }
 });
 
+router.put("/:id", tokenExtractor, async (req, res, next) => {
+  try {
+    const reading = await ReadingList.findByPk(req.params.id);
+
+    if (!reading) {
+      return res.status(404).end();
+    }
+
+    if (reading.userId !== req.decodedToken.id) {
+      return res.status(403).json({
+        error:
+          "Error: User can only change the status of entries in their own reading list",
+      });
+    }
+
+    reading.read = req.body.read;
+    const modified = await reading.save();
+
+    res.json(modified);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
