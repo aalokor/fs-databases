@@ -3,13 +3,13 @@ const bcrypt = require("bcrypt");
 
 const { User, Blog } = require("../models");
 
-/*const userFinder = async (req, res, next) => {
+const userFinder = async (req, res, next) => {
   req.user = await User.findByPk(req.params.id);
   if (!req.user) {
     return res.status(404).end();
   }
   next();
-}; */
+};
 
 const userFinderByUsername = async (req, res, next) => {
   req.user = await User.findOne({
@@ -32,6 +32,28 @@ router.get("/", async (req, res) => {
     },
   });
   res.json(users);
+});
+
+router.get("/:id", userFinder, async (req, res) => {
+  const user = await User.findByPk(req.user.id, {
+    attributes: ["name", "username"],
+    include: [
+      {
+        model: Blog,
+        as: "readings",
+        attributes: { exclude: ["userId", "createdAt", "updatedAt"] },
+        through: {
+          attributes: [],
+        },
+      },
+    ],
+  });
+
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).end();
+  }
 });
 
 router.post("/", async (req, res, next) => {
