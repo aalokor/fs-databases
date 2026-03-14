@@ -36,6 +36,11 @@ User.init(
     sequelize,
     underscored: true,
     modelName: "user",
+    defaultScope: {
+      where: {
+        disabled: false,
+      },
+    },
   },
 );
 
