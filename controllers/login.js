@@ -3,15 +3,13 @@ const bcrypt = require("bcrypt");
 const router = require("express").Router();
 
 const { SECRET } = require("../util/config");
-const User = require("../models/user");
+const { User, Session } = require("../models");
 
 router.post("/", async (request, response) => {
   const body = request.body;
 
-  const user = await User.findOne({
-    where: {
-      username: body.username,
-    },
+  const user = await User.scope(null).findOne({
+    where: { username: body.username },
   });
 
   const passwordCorrect =
@@ -25,12 +23,23 @@ router.post("/", async (request, response) => {
     });
   }
 
+  if (user.disabled) {
+    return response.status(401).json({
+      error: "User is disabled",
+    });
+  }
+
   const userForToken = {
     username: user.username,
     id: user.id,
   };
 
   const token = jwt.sign(userForToken, SECRET);
+
+  await Session.create({
+    userId: user.id,
+    token,
+  });
 
   response
     .status(200)
